@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七彩霓虹灯</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #222;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .light {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%; /* CSS3把DIV做成圆 */
+            margin: 0 15px;
+            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        button {
+            padding: 10px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        #stopBtn {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: white; margin-bottom: 30px;">七彩霓虹灯</h1>
+    
+    <div class="container">
+        <div class="light" id="light1"></div>
+        <div class="light" id="light2"></div>
+        <div class="light" id="light3"></div>
+        <div class="light" id="light4"></div>
+        <div class="light" id="light5"></div>
+        <div class="light" id="light6"></div>
+        <div class="light" id="light7"></div>
+    </div>
+    
+    <div class="controls">
+        <button id="startBtn">启动</button>
+        <button id="stopBtn">停止</button>
+    </div>
+
+    <script>
+        const colors = [
+            '#FF0000', // 红
+            '#FF7F00', // 橙
+            '#FFFF00', // 黄
+            '#00FF00', // 绿
+            '#0000FF', // 蓝
+            '#4B0082', // 靛
+            '#9400D3'  // 紫
+        ];
+        
+        let lights = [];
+        let animationInterval;
+        let isRunning = false;
+        
+        // 初始化灯
+        function initLights() {
+            lights = [];
+            for (let i = 1; i <= 7; i++) {
+                lights.push(document.getElementById(`light${i}`));
+            }
+        }
+        
+        // 设置灯的颜色
+        function setLightColors() {
+            // 打乱颜色数组
+            const shuffledColors = [...colors].sort(() => Math.random() - 0.5);
+            
+            // 为每个灯分配不同的颜色
+            lights.forEach((light, index) => {
+                light.style.backgroundColor = shuffledColors[index];
+                light.style.boxShadow = `0 0 20px 5px ${shuffledColors[index]}`;
+            });
+        }
+        
+        // 开始动画
+        function startAnimation() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            setLightColors(); // 初始设置
+            
+            animationInterval = setInterval(() => {
+                setLightColors();
+            }, 500); // 每500毫秒变换一次
+        }
+        
+        // 停止动画
+        function stopAnimation() {
+            if (!isRunning) return;
+            
+            clearInterval(animationInterval);
+            isRunning = false;
+            
+            // 关闭所有灯
+            lights.forEach(light => {
+                light.style.backgroundColor = '#333';
+                light.style.boxShadow = '0 0 20px 5px rgba(255, 255, 255, 0.1)';
+            });
+        }
+        
+        // 初始化
+        window.onload = function() {
+            initLights();
+            
+            document.getElementById('startBtn').addEventListener('click', startAnimation);
+            document.getElementById('stopBtn').addEventListener('click', stopAnimation);
+        };
+    </script>
+</body>
+</html>
